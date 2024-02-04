@@ -1,13 +1,31 @@
 function storage() {
-	function addIds(contestants) {
-		return contestants.map(contestant => ({...contestant, id: contestant.contestant.replace(/\s/g, '-').toLowerCase()}));
+	const {RATING_CATEGORIES} = window.Config;
+	const numCategories = RATING_CATEGORIES.length - 1;
+	function addScoresIfMissing(contestant) {
+		const {scores} = contestant;
+
+		if (scores?.length === numCategories) {
+			return contestant;
+		}
+
+		return {
+			...contestant,
+			scores: (scores || []).concat(Array(numCategories - (scores || []).length).fill(0)),
+		};
+	}
+
+	function addCommonContestantFields(contestants) {
+		return contestants.map(contestant => ({
+			...addScoresIfMissing(contestant),
+			id: contestant.contestant.replace(/\s/g, '-').toLowerCase(),
+		}));
 	}
 
 	const competitions
 = [{
 	name: 'Deltävling 1',
 	expires: Date.parse('2024-02-04T01:00:00Z'),
-	competitors: addIds([
+	competitors: addCommonContestantFields([
 		{
 			contestant: 'Adam Woods',
 			song: 'Supernatural',
@@ -42,7 +60,7 @@ function storage() {
 {
 	name: 'Deltävling 2',
 	expires: Date.parse('2024-02-11T01:00:00Z'),
-	competitors: addIds([
+	competitors: addCommonContestantFields([
 		{
 			contestant: 'Maria Sur',
 			song: 'When I\'m Gone',
@@ -77,7 +95,7 @@ function storage() {
 {
 	name: 'Deltävling 3',
 	expires: Date.parse('2024-02-18T01:00:00Z'),
-	competitors: addIds([
+	competitors: addCommonContestantFields([
 		{
 			contestant: 'Jacqline',
 			song: 'Effortless',
@@ -112,7 +130,7 @@ function storage() {
 {
 	name: 'Deltävling 4',
 	expires: Date.parse('2024-02-25T01:00:00Z'),
-	competitors: addIds([
+	competitors: addCommonContestantFields([
 		{
 			contestant: 'Albin Tingvall',
 			song: 'Done getting over you',
@@ -147,7 +165,7 @@ function storage() {
 {
 	name: 'Deltävling 5',
 	expires: Date.parse('2024-03-03T01:00:00Z'),
-	competitors: addIds([
+	competitors: addCommonContestantFields([
 		{
 			contestant: 'Marcus & Martinus',
 			song: 'Unforgettable',
@@ -180,7 +198,6 @@ function storage() {
 		},
 	])}];
 
-	window.competitions = competitions;
 	const initTime = Date.now();
 	const findCurrentIndex = competitions => competitions.findIndex(competition => competition.expires > initTime);
 
@@ -201,8 +218,12 @@ function storage() {
 			return;
 		}
 
-		const localStorageValue = localStorage.getItem(storageKey);
 		const windowValue = window[windowKey];
+		if (isDefined(windowValue)) {
+			return mapFn ? mapFn(windowValue) : windowValue;
+		}
+
+		const localStorageValue = localStorage.getItem(storageKey);
 		if (!isDefined(localStorageValue) && !isDefined(windowValue)) {
 			localStorage.setItem(storageKey, JSON.stringify(fallbackFn()));
 			setWindow(storageKey, windowKey);
@@ -243,25 +264,42 @@ function storage() {
 	}
 
 	function getCurrentCompetition() {
-		return get('currentCompetition', '__CURRENT_COMPETITION__', () => findCurrentIndex(window.getCompetitions()));
+		return get(
+			'currentCompetition',
+			'__CURRENT_COMPETITION__',
+			() => findCurrentIndex(window.getCompetitions()),
+		);
 	}
 
 	function storeCurrentCompetition(currentCompetition) {
-		store('currentCompetition', '__CURRENT_COMPETITION__', currentCompetition);
+		store(
+			'currentCompetition',
+			'__CURRENT_COMPETITION__',
+			currentCompetition,
+		);
 	}
 
 	function getContestants() {
-		return get('competitions', '__COMPETITIONS__', () => getCompetitions()[getCurrentCompetition()].competitors, competitions => competitions[getCurrentCompetition()].competitors);
+		return get(
+			'competitions',
+			'__COMPETITIONS__',
+			() => getCompetitions()[getCurrentCompetition()].competitors,
+			competitions => competitions[getCurrentCompetition()].competitors,
+		);
 	}
 
 	function storeContestants(contestants) {
-		store('competitions', '__COMPETITIONS__', window.getCompetitions().map((competition, index) => {
-			if (index === window.getCurrentCompetition()) {
-				return {...competition, competitors: contestants};
-			}
+		store(
+			'competitions',
+			'__COMPETITIONS__',
+			window.getCompetitions().map((competition, index) => {
+				if (index === window.getCurrentCompetition()) {
+					return {...competition, competitors: addCommonContestantFields(contestants)};
+				}
 
-			return competition;
-		}));
+				return competition;
+			}),
+		);
 	}
 
 	window.getCompetitions = getCompetitions;
@@ -271,7 +309,96 @@ function storage() {
 	window.getContestants = getContestants;
 	window.storeContestants = storeContestants;
 
-	storeCompetitions(getCompetitions());
+	window.State = {
+		get(key) {
+			if (key === 'competitions') {
+				return window.getCompetitions();
+			}
+
+			if (key === 'currentCompetition') {
+				return window.getCurrentCompetition();
+			}
+
+			if (key === 'contestants') {
+				return window.getContestants();
+			}
+
+			console.warn('Unknown get key', key);
+		},
+		set(key, value) {
+			if (key === 'competitions') {
+				window.storeCompetitions(value);
+				document.dispatchEvent(new CustomEvent('updateCompetitions'), {detail: {competitions: value}});
+				return;
+			}
+
+			if (key === 'currentCompetition') {
+				window.storeCurrentCompetition(value);
+				document.dispatchEvent(new CustomEvent('updateCurrentCompetition'), {detail: {competitions: window.getCurrentCompetition()}});
+				return;
+			}
+
+			if (key === 'contestants') {
+				window.storeContestants(value);
+				document.dispatchEvent(new CustomEvent('updateContestants'), {detail: {contestants: value}});
+				return;
+			}
+
+			console.warn('Unknown set key', key);
+		},
+
+		on(key, callback) {
+			if (key === 'updateCompetitions') {
+				return document.addEventListener('updateCompetitions', callback);
+			}
+
+			if (key === 'updateCurrentCompetition') {
+				return document.addEventListener('updateCurrentCompetition', callback);
+			}
+
+			if (key === 'updateContestants') {
+				return document.addEventListener('updateContestants', callback);
+			}
+
+			if (key === 'update') {
+				['updateCompetitions', 'updateCurrentCompetition', 'updateContestants'].forEach(event => {
+					document.addEventListener(event, callback);
+				});
+				return;
+			}
+
+			console.warn('Unknown on key', key);
+		},
+
+		off(key, callback) {
+			if (key === 'updateCompetitions') {
+				return document.removeEventListener('updateCompetitions', callback);
+			}
+
+			if (key === 'updateCurrentCompetition') {
+				return document.removeEventListener('updateCurrentCompetition', callback);
+			}
+
+			if (key === 'updateContestants') {
+				return document.removeEventListener('updateContestants', callback);
+			}
+
+			if (key === 'update') {
+				['updateCompetitions', 'updateCurrentCompetition', 'updateContestants'].forEach(event => {
+					document.removeEventListener(event, callback);
+				});
+				return;
+			}
+
+			console.warn('Unknown off key', key);
+		},
+	};
+
+	window.State.set('competitions', window.getCompetitions());
 }
 
 storage();
+window.State.on('update', (() => {
+	console.log('State updated');
+}));
+

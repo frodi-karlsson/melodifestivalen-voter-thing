@@ -31,7 +31,11 @@
     box-shadow: none;
     border: none;
     background: transparent;
-    color: gray;
+    color: #3f3f3f;
+}
+
+.dark #expandable-button {
+    color: #cfcfcf;
 }
 
 #expandable-button::after {
