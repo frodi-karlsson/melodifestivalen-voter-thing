@@ -1,5 +1,5 @@
 <!DOCTYPE html><html><head><style>#expandable > #expandable-content { display: none; }
-#expandable.expanded > #expandable-content { display: block; }
+#expandable.expanded > #expandable-content { display: flex; }
 
 
 #expandable {
@@ -27,6 +27,7 @@
     height: 100%;
     justify-content: space-between;
     width: 100%;
+    gap: 40px;
 }
 
 .expandableForm {
@@ -52,6 +53,11 @@
     gap: 10px;
     height: 100%;
     width: 100%;
+
+    @media screen and (max-width: 1000px) {
+        flex-direction: column;
+        gap: 10px;
+    }
 }   
 
 .expandableInput {
@@ -73,13 +79,14 @@
     padding: 0 20px;
     background-color: #fff;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
 
     @media screen and (max-width: 1000px) {
         justify-content: end;
     }
 }
+
 
 .dark .header {
     background-color: #423981;
@@ -88,11 +95,15 @@
 .header ~ * {
     margin-top: 60px;
 }
-
+.empty, .darkModeSection {
+    min-width: 200px;
+    height: 100%;
+}
 .darkModeSection {
     display: flex;
     gap: 10px;
     align-items: center;
+    justify-content: end;
     flex-direction: row;
 }
 
@@ -308,6 +319,10 @@ button, input[role="button"] {
     color: #f0f6d7;
 }
 
+button:hover, input[role="button"]:hover {
+    outline: 1px solid rgb(72, 188, 255);
+}
+
 .dark button, .dark input[role="button"] {
     background-color: #504d78;
     color: #f0f6d7;
@@ -322,7 +337,7 @@ input[type="text"], input[type="number"] {
 input[type=checkbox][data-toggle] {
 	height: 0;
 	width: 0;
-	visibility: hidden;
+	opacity: 0;
 }
 
 label[data-toggle] {
@@ -359,4 +374,8 @@ input[type=checkbox][data-toggle]:checked + label:after {
 
 label[data-toggle]:active:after {
 	width: 32.5px;
-}</style><title>Melodifestivalen ratings</title><link rel="icon" href="portrait.jpg"><meta charset="utf-8"><meta name="description" content="Röstdokument för Melodifestivalen"><meta name="author" content="Frodi Karlsson"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></head><body class="dark"><header class="header"> <div class="empty"></div><h1 class="headerTitle">Röstdokument för Melodifestivalen</h1><div class="darkModeSection"><input id="dark" type="checkbox" data-toggle><label for="dark" data-toggle>Dark mode toggle</label><p>Dark mode</p></div></header><div class="page"><div id="expandable"><button id="expandable-button">Show Edit Form</button><div id="expandable-content"></div></div><div id="contestants"></div><script src="scripts/theme.js"></script><script src="scripts/hydrate-contestants.js"></script><script src="scripts/ratings-handler.js"></script><script src="scripts/expandable.js"></script></div></body></html>
+}
+
+input[type=checkbox][data-toggle]:focus + label {
+    outline: 3px dashed #75ff83;
+}</style><title>Melodifestivalen ratings</title><link rel="icon" href="portrait.jpg"><meta charset="utf-8"><meta name="description" content="Röstdokument för Melodifestivalen"><meta name="author" content="Frodi Karlsson"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="color-scheme" content="dark light"><meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"></head><body class="dark"><header class="header"> <div class="empty"></div><h1 class="headerTitle">Röstdokument för Melodifestivalen</h1><div class="darkModeSection"><input id="dark" type="checkbox" data-toggle aria-hidden="false"><label for="dark" data-toggle>Dark mode toggle</label><p>Mörkervy</p></div></header><div class="page"><div id="expandable"><button id="expandable-button" tabindex="0">Redigera deltagare</button><div id="expandable-content"></div></div><div id="contestants"></div><script src="scripts/theme.js"></script><script src="scripts/hydrate-contestants.js"></script><script src="scripts/ratings-handler.js"></script><script src="scripts/expandable.js"></script></div></body></html>

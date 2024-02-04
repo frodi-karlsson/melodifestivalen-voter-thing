@@ -4,9 +4,9 @@ function expandable() {
 	expandableButton.addEventListener('click', () => {
 		expandable.classList.toggle('expanded');
 		if (expandable.classList.contains('expanded')) {
-			expandableButton.textContent = 'Hide Edit Form';
+			expandableButton.textContent = 'Göm deltagarredigering';
 		} else {
-			expandableButton.textContent = 'Show Edit Form';
+			expandableButton.textContent = 'Redigera deltagare';
 		}
 	});
 }

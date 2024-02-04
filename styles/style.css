@@ -33,6 +33,10 @@ button, input[role="button"] {
     color: #f0f6d7;
 }
 
+button:hover, input[role="button"]:hover {
+    outline: 1px solid rgb(72, 188, 255);
+}
+
 .dark button, .dark input[role="button"] {
     background-color: #504d78;
     color: #f0f6d7;

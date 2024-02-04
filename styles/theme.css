@@ -1,7 +1,7 @@
 input[type=checkbox][data-toggle] {
 	height: 0;
 	width: 0;
-	visibility: hidden;
+	opacity: 0;
 }
 
 label[data-toggle] {
@@ -38,4 +38,8 @@ input[type=checkbox][data-toggle]:checked + label:after {
 
 label[data-toggle]:active:after {
 	width: 32.5px;
+}
+
+input[type=checkbox][data-toggle]:focus + label {
+    outline: 3px dashed #75ff83;
 }

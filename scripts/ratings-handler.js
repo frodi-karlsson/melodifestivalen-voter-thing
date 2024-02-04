@@ -15,7 +15,7 @@ function ratingsHandler() {
 		}
 
 		contestantRadios[contestant][category][score] = radio;
-		radio.tabIndex = (contestant * 10) + category + 1;
+		radio.tabIndex = (contestant * 10) + category + 2;
 		radio.addEventListener('change', () => {
 			scores[contestant][category] = value;
 			updateScores();

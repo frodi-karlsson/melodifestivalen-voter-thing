@@ -195,7 +195,7 @@ function hydrateContestants() {
 			}
 		}
 
-		alert('Too many contestants!');
+		alert('För många deltagare!');
 		throw new Error('Too many contestants!');
 	}
 
@@ -215,10 +215,10 @@ function hydrateContestants() {
 		name.type = 'text';
 		name.name = 'contestant';
 		name.value = contestant?.contestant || '';
-		name.placeholder = 'Contestant';
+		name.placeholder = 'Deltagare';
 		name.required = true;
 		const nameLabel = document.createElement('label');
-		nameLabel.textContent = 'Contestant';
+		nameLabel.textContent = 'Deltagare';
 		nameLabel.htmlFor = name.id;
 
 		const song = document.createElement('input');
@@ -226,21 +226,21 @@ function hydrateContestants() {
 		song.type = 'text';
 		song.name = 'song';
 		song.value = contestant?.song || '';
-		song.placeholder = 'Song';
+		song.placeholder = 'Låt';
 		song.required = true;
 		const songLabel = document.createElement('label');
-		songLabel.textContent = 'Song';
+		songLabel.textContent = 'Låt';
 		songLabel.htmlFor = song.id;
 
 		const img = document.createElement('input');
 		img.className = 'expandableInput';
 		img.type = 'text';
 		img.name = 'img';
-		img.placeholder = 'Image URL';
+		img.placeholder = 'Bildlänk';
 		img.value = contestant?.img || '';
 		img.required = true;
 		const imgLabel = document.createElement('label');
-		imgLabel.textContent = 'Image URL';
+		imgLabel.textContent = 'Bildlänk';
 		imgLabel.htmlFor = img.id;
 
 		const nameField = document.createElement('div');
@@ -265,13 +265,13 @@ function hydrateContestants() {
 		const submit = document.createElement('input');
 		submit.type = 'submit';
 		submit.role = 'button';
-		submit.value = 'Submit';
+		submit.value = 'Spara';
 		buttonDiv.appendChild(submit);
 
 		const remove = document.createElement('input');
 		remove.type = 'button';
 		remove.role = 'button';
-		remove.value = 'Remove';
+		remove.value = 'Ta bort';
 		remove.addEventListener('click', () => {
 			const contestant = form.getAttribute('data-name');
 			const contestants = getContestants().filter(c => c.contestant !== contestant);
