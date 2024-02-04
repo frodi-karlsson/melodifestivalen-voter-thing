@@ -17,11 +17,20 @@
     gap: 10px;
     width: 100%;
     border-bottom: 1px solid #00000033;
+    padding: 10px 0;
+}
+
+.dark .contestantSummary {
+    border-bottom: 1px solid #ffffff33;
 }
 
 .contestantSummaryName {
-    width: 200px;
+    width: 100%;
     text-align: left;
+
+    @media screen and (max-width: 1000px) {
+        font-size: 18px;
+    }
 }
 
 .contestantSummaryScores {
@@ -55,6 +64,7 @@
 }
 
 .contestantSummaryTotal {
+    width: 100px;
     border-radius: 5px;
     padding: 5px;
     background-color: rgba(122, 122, 122, 0.1);
