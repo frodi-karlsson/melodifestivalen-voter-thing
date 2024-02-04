@@ -15,24 +15,46 @@ function ratingsHandler() {
 		}
 
 		contestantRadios[contestant][category][score] = radio;
-		radio.tabIndex = (contestant * 10) + category + 2;
 		radio.addEventListener('change', () => {
 			scores[contestant][category] = value;
 			updateScores();
+			radio.dispatchEvent(new Event('updateSummary'));
 		});
 	});
-	const totals = document.querySelectorAll('input[class="total"]');
+	const totals = document.querySelectorAll('.total');
 	totals.forEach((total, index) => {
-		total.value = '0/50';
-		total.setAttribute('tabindex', -1);
+		total.textContent = '0/50';
 	});
 	function updateScores() {
 		scores.forEach((contestantScores, contestant) => {
 			const total = contestantScores.reduce((a, b) => a + b, 0);
-			totals[contestant].value = total + '/50';
+			totals[contestant].textContent = total + '/50';
 		});
 	}
 }
+
+function getScores() {
+	const {getContestants} = window;
+	const scores = [];
+	getContestants().forEach((contestant, index) => {
+		const obj = {};
+		const radios = document.querySelectorAll('input[type="radio"][name^="' + contestant.id + '"]:checked');
+		const total = document.querySelectorAll('.total')[index];
+		const categoryScores = [];
+		radios.forEach((radio, index) => {
+			const value = parseInt(radio.value, 10);
+			const category = radio.name.split('-').pop();
+			categoryScores.push({category, value});
+		});
+		obj.id = contestant.id;
+		obj.total = total.textContent;
+		obj.scores = categoryScores;
+		scores.push(obj);
+	});
+	return scores;
+}
+
+window.getScores = getScores;
 
 ratingsHandler();
 document.addEventListener('updateContestants', () => {

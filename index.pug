@@ -1,5 +1,5 @@
 doctype html
-html
+html(lang='sv')
     head
         style
             |!{css}
@@ -10,6 +10,7 @@ html
         meta(name='author' content='Frodi Karlsson')
         meta(name='viewport' content='width=device-width, initial-scale=1')
         meta(name='color-scheme' content='dark light')
-        meta(http-equiv='Content-Security-Policy' content='upgrade-insecure-requests')
+        meta(http-equiv="Content-Security-Policy' content='upgrade-insecure-requests, default-src 'self'; style-src 'self'; script-src 'self;")
+        meta(http-equiv="Cache-Control" content="max-age=31536000")
     body.dark
         include pages/index/index.pug

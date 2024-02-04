@@ -1,79 +1,5 @@
 function hydrateContestants() {
-	const placeholderContestants
-= [
-	{
-		contestant: 'Adam Woods',
-		song: 'Supernatural',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/5feeb24b-6bf3-4f2d-bf62-accee8fc310a?fit=crop&format=auto&h=867&q=50&w=1300&s=13491121d9d464fe0bc8e039298cedf1168a661f',
-	},
-	{
-		contestant: 'Samir & Viktor',
-		song: 'Hela världen väntar',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/5851781b-6bbf-4242-aff9-c31ca5dbcca5?fit=crop&format=auto&h=1267&q=50&w=1900&s=2784fd3505608362b46ef921ba8d8203147d7ef0',
-	},
-	{
-		contestant: 'Melina Borglowe',
-		song: 'Min Melodi',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/132d1afa-760a-4178-888a-1640dc050dfc?fit=crop&format=auto&h=867&q=50&w=1300&s=62e384037a832c6194191f57c813ea8490ce7db9',
-	},
-	{
-		contestant: 'Elisa Lindström',
-		song: 'Forever Yours',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/7d3461c7-0c91-4116-87cc-9f1b98d2c793?fit=crop&format=auto&h=867&q=50&w=1300&s=4bca7802aa2993608cefb981bd7ce79a5a4c4d78',
-	},
-	{
-		contestant: 'Lisa Ajax',
-		song: 'Awful Liar',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/46b06501-bc63-4a0c-a483-21b27cc057db?fit=crop&format=auto&h=867&q=50&w=1300&s=ef4b1daf92d9c9522eb881d3eea14e1ea0b7138f',
-	},
-	{
-		contestant: 'Smash Into Pieces',
-		song: 'Heroes are calling',
-		img: 'https://images.aftonbladet-cdn.se/v2/images/285e58d2-db40-4da2-bdd5-f77d77c9dd67?fit=crop&format=auto&h=899&q=50&w=1300&s=a1b49d609248a4a4c7bdb439018bd1b63a9b8ab5',
-	},
-].map(contestant => ({...contestant, id: contestant.contestant.replace(/\s/g, '-').toLowerCase()}));
-
-	// Storage functions
-
-	function setWindowContestants() {
-		if (typeof window === 'undefined') {
-			return;
-		}
-
-		const parsed = JSON.parse(localStorage.getItem('contestants'));
-
-		window.__CONTESTANTS__ = parsed;
-	}
-
-	function getContestants() {
-		if (typeof window === 'undefined') {
-			return;
-		}
-
-		if (window.__CONTESTANTS__) {
-			return window.__CONTESTANTS__;
-		}
-
-		if (localStorage.getItem('contestants')) {
-			setWindowContestants();
-			return getContestants();
-		}
-
-		return [];
-	}
-
-	window.getContestants = getContestants;
-
-	function storeContestants(contestants) {
-		if (typeof window === 'undefined') {
-			return;
-		}
-
-		const json = JSON.stringify(contestants);
-		localStorage.setItem('contestants', json);
-		setWindowContestants();
-	}
-
+	const {getDefaultContestants, getContestants, storeContestants} = window;
 	// Hydration functions
 
 	function getContainer() {
@@ -94,8 +20,9 @@ function hydrateContestants() {
 		rating.className = 'rating';
 
 		const name = document.createElement('p');
-		name.className = 'rating-name';
+		name.className = 'ratingName';
 		name.textContent = category;
+		name.style.visibility = isHeader ? 'hidden' : 'visible';
 
 		const scores = document.createElement('div');
 		scores.className = 'scores';
@@ -109,6 +36,10 @@ function hydrateContestants() {
 				score.type = 'radio';
 				score.name = id + '-' + category;
 				score.value = i + 1;
+				score.ariaLabel = category + ' ' + (i + 1);
+				score.addEventListener('updateSummary', () => {
+					fillSummary();
+				});
 			}
 
 			scores.appendChild(score);
@@ -134,14 +65,16 @@ function hydrateContestants() {
 	}
 
 	function createTotal(contestant) {
-		const total = document.createElement('input');
-		total.type = 'text';
+		const totalWrapper = document.createElement('div');
+		totalWrapper.className = 'totalWrapper';
+		totalWrapper.id = 'totalWrapper' + contestant.id;
+		const total = document.createElement('p');
 		total.name = 'total';
-		total.value = '0/50';
+		total.textContent = '0/50';
 		total.className = 'total';
-		total.readOnly = true;
 		total.id = 'total' + contestant.id;
-		return total;
+		totalWrapper.appendChild(total);
+		return totalWrapper;
 	}
 
 	function createContestant(contestant) {
@@ -154,10 +87,10 @@ function hydrateContestants() {
 		img.src = contestant.img;
 		img.alt = contestant.contestant;
 
-		const name = document.createElement('h2');
+		const name = document.createElement('h1');
 		name.textContent = contestant.contestant;
 
-		const song = document.createElement('p');
+		const song = document.createElement('h2');
 		song.textContent = contestant.song;
 
 		const info = document.createElement('div');
@@ -217,6 +150,7 @@ function hydrateContestants() {
 		name.value = contestant?.contestant || '';
 		name.placeholder = 'Deltagare';
 		name.required = true;
+		name.id = 'contestant-' + form.id;
 		const nameLabel = document.createElement('label');
 		nameLabel.textContent = 'Deltagare';
 		nameLabel.htmlFor = name.id;
@@ -228,6 +162,7 @@ function hydrateContestants() {
 		song.value = contestant?.song || '';
 		song.placeholder = 'Låt';
 		song.required = true;
+		song.id = 'song-' + form.id;
 		const songLabel = document.createElement('label');
 		songLabel.textContent = 'Låt';
 		songLabel.htmlFor = song.id;
@@ -239,6 +174,7 @@ function hydrateContestants() {
 		img.placeholder = 'Bildlänk';
 		img.value = contestant?.img || '';
 		img.required = true;
+		img.id = 'img-' + form.id;
 		const imgLabel = document.createElement('label');
 		imgLabel.textContent = 'Bildlänk';
 		imgLabel.htmlFor = img.id;
@@ -275,6 +211,7 @@ function hydrateContestants() {
 		remove.addEventListener('click', () => {
 			const contestant = form.getAttribute('data-name');
 			const contestants = getContestants().filter(c => c.contestant !== contestant);
+			document.dispatchEvent(new CustomEvent('show-toast', {detail: {message: 'Deltagare borttagen'}}));
 			updateContestants(contestants);
 		});
 
@@ -303,6 +240,8 @@ function hydrateContestants() {
 			if (forms.length <= contestants.length) {
 				createExpandableFormSection();
 			}
+
+			document.dispatchEvent(new CustomEvent('show-toast', {detail: {message: 'Deltagare sparad'}}));
 		});
 		container.appendChild(form);
 	}
@@ -317,6 +256,41 @@ function hydrateContestants() {
 		createExpandableFormSection();
 	}
 
+	function fillSummary() {
+		const scores = window.getScores?.() || [];
+		const summary = document.getElementById('summary');
+		summary.innerHTML = '';
+		scores.forEach(score => {
+			const contestant = document.createElement('div');
+			contestant.className = 'contestantSummary';
+			const name = document.createElement('h2');
+			name.className = 'contestantSummaryName';
+			name.textContent = getContestants().find(c => c.id === score.id).contestant;
+			const scoreDiv = document.createElement('div');
+			scoreDiv.className = 'contestantSummaryScores';
+			score.scores.forEach(s => {
+				const category = document.createElement('div');
+				category.className = 'contestantSummaryCategory';
+				const categoryName = document.createElement('p');
+				categoryName.textContent = s.category;
+				categoryName.className = 'contestantSummaryCategoryName';
+				const categoryValue = document.createElement('p');
+				categoryValue.textContent = s.value;
+				categoryValue.className = 'contestantSummaryCategoryValue';
+				category.appendChild(categoryName);
+				category.appendChild(categoryValue);
+				scoreDiv.appendChild(category);
+			});
+			const total = document.createElement('p');
+			total.className = 'contestantSummaryTotal';
+			total.textContent = score.total;
+			contestant.appendChild(name);
+			contestant.appendChild(scoreDiv);
+			contestant.appendChild(total);
+			summary.appendChild(contestant);
+		});
+	}
+
 	// Main functions
 
 	function renderContestants(contestants) {
@@ -326,9 +300,10 @@ function hydrateContestants() {
 			container.appendChild(createContestant(contestant));
 		});
 		createExpandableForms();
+		fillSummary();
 	}
 
-	const updateEmitter = new Event('updateContestants');
+	const updateEmitter = new CustomEvent('updateContestants');
 
 	function updateContestants(contestants) {
 		storeContestants(contestants);
@@ -337,14 +312,18 @@ function hydrateContestants() {
 	}
 
 	if (getContestants().length === 0) {
-		storeContestants(placeholderContestants);
+		storeContestants(getDefaultContestants());
 	}
 
 	if (getContestants().length === 0) {
-		storeContestants(placeholderContestants);
+		storeContestants(getDefaultContestants());
 	}
 
 	renderContestants(getContestants());
 }
 
 hydrateContestants();
+
+document.addEventListener('updateCompetitions', () => {
+	hydrateContestants();
+});

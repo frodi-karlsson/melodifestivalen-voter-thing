@@ -1,8 +1,5 @@
 .header {
-    position: fixed;
     width: 100%;
-    top: 0;
-    left: 0;
     height: 60px;
     padding: 0 20px;
     background-color: #fff;
@@ -13,6 +10,9 @@
     @media screen and (max-width: 1000px) {
         justify-content: end;
     }
+    @media print {
+        display: none;
+    }
 }
 
 
@@ -20,10 +20,7 @@
     background-color: #423981;
 }
 
-.header ~ * {
-    margin-top: 60px;
-}
-.empty, .darkModeSection {
+.darkModeSection {
     min-width: 200px;
     height: 100%;
 }
@@ -35,8 +32,15 @@
     flex-direction: row;
 }
 
-.headerTitle, .empty {
+.headerTitle {
     @media screen and (max-width: 1000px) {
         display: none;
     }
+}
+
+#competitionSelection {
+    width: 150px;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px solid #00000033;
 }

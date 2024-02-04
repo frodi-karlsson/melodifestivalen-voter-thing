@@ -1,0 +1,61 @@
+#summary {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.contestantSummary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+    gap: 10px;
+    width: 100%;
+    border-bottom: 1px solid #00000033;
+}
+
+.contestantSummaryName {
+    width: 200px;
+    text-align: left;
+}
+
+.contestantSummaryScores {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+    @media screen and (max-width: 1000px) {
+        flex-direction: column;
+    }
+}
+
+.contestantSummaryCategory {
+    width: 100px;
+}
+
+.contestantSummaryCategoryName {
+    width: 100%;
+    text-align: center;
+}
+
+.contestantSummaryCategoryValue {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: rgba(122, 122, 122, 0.1);
+}
+
+.contestantSummaryTotal {
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgba(122, 122, 122, 0.1);
+}

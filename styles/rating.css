@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    justify-content: space-between;
+    justify-content: center;
     gap: 10px;
 }
 
@@ -18,10 +18,16 @@
 
 .score {
     width: 20px;
+    @media screen and (max-width: 1000px) {
+        width: 25px;
+    }
 }
 .score p {
     font-size: 20px;
     font-weight: 400;
+    @media screen and (max-width: 1000px) {
+        font-size: 25px;
+    }
 }
 
 .rating {
@@ -36,6 +42,13 @@
     }
 }
 
+.ratingName {
+    @media screen and (max-width: 1000px) {
+        width: 100%;
+        text-align: left;
+    }
+}
+
 input[type="radio"] {
     height: 20px;
     width: 20px;
@@ -45,6 +58,11 @@ input[type="radio"] {
     margin: 0;
     border-radius: 50%;
     box-shadow: 0 0 0 1px #fb6666;
+
+    @media screen and (max-width: 1000px) {
+        height: 25px;
+        width: 25px;
+    }
 }
 
 input[type="radio"]:checked {
@@ -55,7 +73,7 @@ input[type="radio"]:checked {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10%;
+    justify-content: space-evenly;
     height: 100%;
     width: 100%;
 
@@ -65,9 +83,9 @@ input[type="radio"]:checked {
     }
 }
 
-input[type="text"].total {
-    height: 150px;
-    width: 150px;
+.totalWrapper {
+    height: 120px;
+    width: 120px;
     border-radius: 50%;
     @media (prefers-color-scheme: dark) {
         background-color: #545454;
@@ -82,6 +100,13 @@ input[type="text"].total {
         width: 100px;
         
     }
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.total {
     font-size: 30px;
     text-align: center;
 }
