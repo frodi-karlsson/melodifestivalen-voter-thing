@@ -1,0 +1,41 @@
+input[type=checkbox][data-toggle] {
+	height: 0;
+	width: 0;
+	visibility: hidden;
+}
+
+label[data-toggle] {
+	cursor: pointer;
+	text-indent: -9999px;
+	width: 50px;
+	height: 25px;
+	background: grey;
+	display: block;
+	border-radius: 100px;
+	position: relative;
+}
+
+label[data-toggle]:after {
+	content: '';
+	position: absolute;
+	top: 1.25px;
+	left: 1.25px;
+	width: 22.5px;
+	height: 22.5px;
+	background: #fff;
+	border-radius: 90px;
+	transition: 0.3s;
+}
+
+input[type=checkbox][data-toggle]:checked + label {
+	background: #bada55;
+}
+
+input[type=checkbox][data-toggle]:checked + label:after {
+	left: calc(100% - 1.25px);
+	transform: translateX(-100%);
+}
+
+label[data-toggle]:active:after {
+	width: 32.5px;
+}
