@@ -45,5 +45,8 @@
     border: 1px solid #00000033;
 }
 .competitionSelectionLabel {
-    display: none;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    opacity: 0;
 }
