@@ -87,14 +87,8 @@ input[type="radio"]:checked {
     height: 120px;
     width: 120px;
     border-radius: 50%;
-    @media (prefers-color-scheme: dark) {
-        background-color: #545454;
-        color: #f0f0f0;
-    }
-    @media (prefers-color-scheme: light) {
-        background-color: #b5b5b5;
-        color: #1e1e1e;
-    }
+    background-color: #fba6a6;
+    color: #1e1e1e;
     @media screen and (max-width: 1000px){
         height: 100px;
         width: 100px;
@@ -104,6 +98,11 @@ input[type="radio"]:checked {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.dark .totalWrapper {
+    background-color: #7e4747;
+    color: #fff
 }
 
 .total {

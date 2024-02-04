@@ -4,6 +4,10 @@ function header() {
 	const select = document.createElement('select');
 	select.id = 'competitionSelection';
 	select.name = 'competitionSelection';
+	const competitionsLabel = document.createElement('label');
+	competitionsLabel.htmlFor = select.id;
+	competitionsLabel.textContent = 'Tävling';
+	competitionsLabel.className = 'competitionSelectionLabel';
 	const competitions = State.get('competitions');
 	const currentCompetitionIndex = State.get('currentCompetition');
 	const currentCompetition = competitions[currentCompetitionIndex];
@@ -27,6 +31,7 @@ function header() {
 		State.set('currentCompetition', index);
 		document.dispatchEvent(new CustomEvent('show-toast', {detail: {message: 'Ändrade till ' + e.target.value}}));
 	});
+	selectionContainer.appendChild(competitionsLabel);
 	selectionContainer.appendChild(select);
 }
 
